@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sbs.java.jsp.board</groupId>
-    <artifactId>jspBoard_GPT</artifactId>
+    <artifactId>jspBoard2</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -35,18 +35,35 @@
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
             <version>3.0.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.32</version> <!-- 1.18.32 이상이면 OK -->
+            <scope>provided</scope>
+        </dependency>
+
+
     </dependencies>
 
+    <!--롬복 -->
 
+
+
+
+    <!-- (선택) 컴파일 플러그인: JDK 버전 명시 정도만 -->
     <build>
-        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
-                    <!-- web.xml 없어도 빌드 가능(우리는 넣을 거지만 안전빵) -->
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <release>17</release>
                 </configuration>
             </plugin>
         </plugins>
