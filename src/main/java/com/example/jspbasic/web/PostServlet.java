@@ -2,6 +2,7 @@ package com.example.jspbasic.web;
 
 import com.example.jspbasic.model.Post;
 import com.example.jspbasic.repo.MemoryPostRepository;
+import com.example.jspbasic.repo.PostRepository;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,15 +12,19 @@ import java.util.List;
 
 @WebServlet("/posts/*")
 public class PostServlet extends HttpServlet {
-    private MemoryPostRepository repo;
+    private PostRepository repo;
 
-    @Override public void init() {
-        ServletContext ctx = getServletContext();
-        synchronized (ctx) {
-            repo = (MemoryPostRepository) ctx.getAttribute("repo");
-            if (repo == null) { repo = new MemoryPostRepository(); ctx.setAttribute("repo", repo); }
+    @Override
+    public void init() {
+        Object o = getServletContext().getAttribute("repo");
+        if (o instanceof com.example.jspbasic.repo.PostRepository pr) {
+            this.repo = pr;
+        } else {
+            // 아주 드문 경우 대비 폴백
+            this.repo = new com.example.jspbasic.repo.MemoryPostRepository();
         }
     }
+
 
     @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -36,7 +41,7 @@ public class PostServlet extends HttpServlet {
                 break;
             case "/detail":
                 long id = Long.parseLong(req.getParameter("id"));
-                req.setAttribute("post", repo.findByid(id));
+                req.setAttribute("post", repo.findById(id));
                 req.getRequestDispatcher("/WEB-INF/jsp/posts/detail.jsp").forward(req, resp);
                 break;
             default:
@@ -54,11 +59,11 @@ public class PostServlet extends HttpServlet {
 
             //로그인 아이디 읽기 (세션이 없거나 값이 비어있으면 guest
             HttpSession session = req.getSession(false);
-<<<<<<< HEAD
+
             String author = (session != null) ? String.valueOf(session.getAttribute("loginId")) : null;
-=======
-            String author = (session != null) ? String.valueOf(session.getAttribute("logined")) : null;
->>>>>>> ef693b3 (feat(posts): 세션 로그인 아이디로 작성자 저장, 리다이렉트 경로 보강)
+
+
+
             if (author == null || author.isBlank() || "null".equals(author)){
                 author = "guest";
             }

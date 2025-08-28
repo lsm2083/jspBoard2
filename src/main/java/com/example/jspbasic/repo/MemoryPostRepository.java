@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class MemoryPostRepository {
+public class MemoryPostRepository implements PostRepository {
     private final Map<Long, Post> store = new ConcurrentHashMap<>();
     private  final AtomicLong seq = new AtomicLong();
 
@@ -21,7 +21,17 @@ public class MemoryPostRepository {
 
     }
 
-    public Post findByid(long id){return store.get(id);}
+    @Override
+    public boolean update(long id, String title, String content, String author) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(long id, String author) {
+        return false;
+    }
+
+    public Post findById(long id){return store.get(id);}
     public Post save(String title, String content,String author){
         long id = seq.incrementAndGet();
         Post p = new Post(id,title,content,author, LocalDateTime.now());
